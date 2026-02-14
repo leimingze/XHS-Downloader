@@ -5,6 +5,9 @@ from ..translation import _
 
 __all__ = ["RSS"]
 
+# Constant for unavailable statistics values
+UNAVAILABLE_VALUE = "-1"
+
 
 class RSS:
     """RSS Feed Generator for Xiaohongshu content"""
@@ -125,13 +128,13 @@ class RSS:
         
         # Statistics
         stats = []
-        if (likes := item.get("点赞数量")) and likes != "-1":
+        if (likes := item.get("点赞数量")) and likes != UNAVAILABLE_VALUE:
             stats.append(f"{_('点赞')}: {likes}")
-        if (collects := item.get("收藏数量")) and collects != "-1":
+        if (collects := item.get("收藏数量")) and collects != UNAVAILABLE_VALUE:
             stats.append(f"{_('收藏')}: {collects}")
-        if (comments := item.get("评论数量")) and comments != "-1":
+        if (comments := item.get("评论数量")) and comments != UNAVAILABLE_VALUE:
             stats.append(f"{_('评论')}: {comments}")
-        if (shares := item.get("分享数量")) and shares != "-1":
+        if (shares := item.get("分享数量")) and shares != UNAVAILABLE_VALUE:
             stats.append(f"{_('分享')}: {shares}")
         
         if stats:

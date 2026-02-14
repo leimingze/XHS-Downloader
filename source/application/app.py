@@ -826,13 +826,16 @@ class XHS:
                 **参数**:
                         
                 - **user_id**: 小红书用户 ID；必需参数
-                - **limit**: 获取作品数量限制，默认 20；可选参数
-                - **cookie**: 请求数据时使用的 Cookie；可选参数
-                - **proxy**: 请求数据时使用的代理；可选参数
+                - **limit**: 获取作品数量限制，默认 20；可选参数（预留用于未来实现）
+                - **cookie**: 请求数据时使用的 Cookie；可选参数（预留用于未来实现）
+                - **proxy**: 请求数据时使用的代理；可选参数（预留用于未来实现）
                 
                 **返回**: RSS 2.0 格式的 XML 订阅源
                 
-                **注意**: 此功能需要配合用户发布作品链接使用
+                **注意**: 
+                - 当前为占位符实现，返回的订阅源为空
+                - 此功能需要配合用户发布作品链接使用
+                - limit、cookie、proxy 参数预留用于未来完整实现
                 """)
             ),
             tags=["RSS"],
@@ -840,12 +843,17 @@ class XHS:
         )
         async def user_rss(
             user_id: str = Query(..., description="用户 ID"),
-            limit: int = Query(20, description="作品数量限制", ge=1, le=100),
-            cookie: str = Query(None, description="Cookie"),
-            proxy: str = Query(None, description="代理"),
+            limit: int = Query(20, description="作品数量限制（预留参数）", ge=1, le=100),
+            cookie: str = Query(None, description="Cookie（预留参数）"),
+            proxy: str = Query(None, description="代理（预留参数）"),
         ):
-            # This is a placeholder - actual user feed implementation would require
-            # additional API endpoints to fetch user's posts
+            """
+            Generate RSS feed for a specific user's content.
+            
+            Note: This is currently a placeholder implementation. 
+            The limit, cookie, and proxy parameters are reserved for future implementation
+            when full user content fetching is available.
+            """
             return Response(
                 content=self.rss.generate_user_feed(
                     items=[],
