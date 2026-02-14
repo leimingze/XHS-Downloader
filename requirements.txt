@@ -12,6 +12,8 @@ fastapi==0.128.5
     # via xhs-downloader (pyproject.toml)
 fastmcp>=2.14.5
     # via xhs-downloader (pyproject.toml)
+feedgen>=1.0.0
+    # via xhs-downloader (pyproject.toml)
 httpx[http2,socks]==0.28.1
     # via xhs-downloader (pyproject.toml)
 lxml==6.0.2

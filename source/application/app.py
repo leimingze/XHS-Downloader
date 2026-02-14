@@ -13,8 +13,8 @@ from datetime import datetime
 from re import compile
 from urllib.parse import urlparse
 from textwrap import dedent
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Query
+from fastapi.responses import RedirectResponse, Response
 from fastmcp import FastMCP
 from typing import Annotated
 from pydantic import Field
@@ -59,6 +59,7 @@ from .explore import Explore
 from .image import Image
 from .request import Html
 from .video import Video
+from .rss import RSS
 from rich import print
 
 __all__ = ["XHS"]
@@ -183,6 +184,7 @@ class XHS:
         self.download = Download(self.manager)
         self.id_recorder = IDRecorder(self.manager)
         self.data_recorder = DataRecorder(self.manager)
+        self.rss = RSS()
         self.clipboard_cache: str = ""
         self.queue = Queue()
         self.event = Event()
@@ -754,6 +756,104 @@ class XHS:
                 else:
                     msg = _("获取小红书作品数据失败")
             return ExtractData(message=msg, params=extract, data=data)
+
+        @server.get(
+            "/xhs/rss",
+            summary=_("获取作品 RSS 订阅"),
+            description=_(
+                dedent("""
+                **参数**:
+                        
+                - **url**: 小红书作品链接，可以是单个或多个（空格分隔）；必需参数
+                - **title**: RSS 订阅标题；可选参数
+                - **description**: RSS 订阅描述；可选参数
+                - **cookie**: 请求数据时使用的 Cookie；可选参数
+                - **proxy**: 请求数据时使用的代理；可选参数
+                
+                **返回**: RSS 2.0 格式的 XML 订阅源
+                """)
+            ),
+            tags=["RSS"],
+            response_class=Response,
+        )
+        async def rss_feed(
+            url: str = Query(..., description="小红书作品链接"),
+            title: str = Query(None, description="RSS 订阅标题"),
+            description: str = Query(None, description="RSS 订阅描述"),
+            cookie: str = Query(None, description="Cookie"),
+            proxy: str = Query(None, description="代理"),
+        ):
+            urls = await self.extract_links(url)
+            if not urls:
+                return Response(
+                    content="<?xml version='1.0' encoding='UTF-8'?><error>Invalid URL</error>",
+                    media_type="application/xml",
+                    status_code=400,
+                )
+            
+            items = []
+            for link in urls:
+                data = await self.__deal_extract(
+                    link,
+                    download=False,
+                    index=None,
+                    data=True,
+                    cookie=cookie,
+                    proxy=proxy,
+                )
+                if data:
+                    items.append(data)
+            
+            if not items:
+                return Response(
+                    content="<?xml version='1.0' encoding='UTF-8'?><error>No data found</error>",
+                    media_type="application/xml",
+                    status_code=404,
+                )
+            
+            rss_xml = self.rss.generate_feed(
+                items=items,
+                title=title,
+                description=description,
+            )
+            return Response(content=rss_xml, media_type="application/xml")
+
+        @server.get(
+            "/xhs/user/rss",
+            summary=_("获取用户作品 RSS 订阅"),
+            description=_(
+                dedent("""
+                **参数**:
+                        
+                - **user_id**: 小红书用户 ID；必需参数
+                - **limit**: 获取作品数量限制，默认 20；可选参数
+                - **cookie**: 请求数据时使用的 Cookie；可选参数
+                - **proxy**: 请求数据时使用的代理；可选参数
+                
+                **返回**: RSS 2.0 格式的 XML 订阅源
+                
+                **注意**: 此功能需要配合用户发布作品链接使用
+                """)
+            ),
+            tags=["RSS"],
+            response_class=Response,
+        )
+        async def user_rss(
+            user_id: str = Query(..., description="用户 ID"),
+            limit: int = Query(20, description="作品数量限制", ge=1, le=100),
+            cookie: str = Query(None, description="Cookie"),
+            proxy: str = Query(None, description="代理"),
+        ):
+            # This is a placeholder - actual user feed implementation would require
+            # additional API endpoints to fetch user's posts
+            return Response(
+                content=self.rss.generate_user_feed(
+                    items=[],
+                    user_name=None,
+                    user_id=user_id,
+                ),
+                media_type="application/xml",
+            )
 
     async def run_mcp_server(
         self,
