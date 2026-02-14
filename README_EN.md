@@ -40,6 +40,7 @@
 <li>✅ Customizable file name format</li>
 <li>✅ Support API call functionality</li>
 <li>✅ Support MCP call functionality</li>
+<li>✅ Support RSS feed functionality</li>
 <li>✅ Support file breakpoint resume download</li>
 <li>✅ Intelligent recognition of notes file types</li>
 <li>✅ Supports author alias configuration</li>
@@ -237,6 +238,110 @@ async def example_api():
 <hr>
 <img src="static/screenshot/MCP下载文件2.png" alt="MCP File Download">
 </details>
+<h2>RSS Mode</h2>
+<p>The project supports generating RSS feeds from RedNote content, making it easy to subscribe and track updates through RSS readers.</p>
+<p><b>Start:</b> Run the command: <code>python .\main.py api</code> (using API mode)</p>
+<p><b>Access:</b> Open your browser and visit <code>http://127.0.0.1:5556/docs</code> to view RSS API documentation</p>
+<h3>RSS API Documentation</h3>
+<h4>1. General RSS Feed <code>/xhs/rss</code></h4>
+<p><b>Request Method:</b><code>GET</code></p>
+<p><b>Function:</b> Generate RSS feed from provided note links</p>
+<p><b>Request Parameters:</b></p>
+<table>
+<thead>
+<tr>
+<th align="center">Parameter</th>
+<th align="center">Type</th>
+<th align="center">Description</th>
+<th align="center">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">url</td>
+<td align="center">str</td>
+<td align="center">RedNote note links, supports multiple links (space-separated); required parameter</td>
+<td align="center">None</td>
+</tr>
+<tr>
+<td align="center">title</td>
+<td align="center">str</td>
+<td align="center">RSS feed title; optional parameter</td>
+<td align="center">RedNote Content Feed</td>
+</tr>
+<tr>
+<td align="center">description</td>
+<td align="center">str</td>
+<td align="center">RSS feed description; optional parameter</td>
+<td align="center">RedNote RSS Feed</td>
+</tr>
+<tr>
+<td align="center">cookie</td>
+<td align="center">str</td>
+<td align="center">Cookie for requests; optional parameter</td>
+<td align="center">Cookie from config file</td>
+</tr>
+<tr>
+<td align="center">proxy</td>
+<td align="center">str</td>
+<td align="center">Proxy for requests; optional parameter</td>
+<td align="center">Proxy from config file</td>
+</tr>
+</tbody>
+</table>
+<p><b>Usage Examples:</b></p>
+<pre>
+# Single note subscription
+http://127.0.0.1:5556/xhs/rss?url=https://www.xiaohongshu.com/explore/NoteID
+
+# Multiple notes subscription (space-separated)
+http://127.0.0.1:5556/xhs/rss?url=https://www.xiaohongshu.com/explore/NoteID1%20https://www.xiaohongshu.com/explore/NoteID2
+
+# Custom title and description
+http://127.0.0.1:5556/xhs/rss?url=NoteLink&title=My%20Feed&description=My%20RedNote%20Subscription
+</pre>
+<h4>2. User RSS Feed <code>/xhs/user/rss</code></h4>
+<p><b>Request Method:</b><code>GET</code></p>
+<p><b>Function:</b> Generate RSS feed for a specific user's notes (currently a placeholder implementation, requires user note links)</p>
+<p><b>Request Parameters:</b></p>
+<table>
+<thead>
+<tr>
+<th align="center">Parameter</th>
+<th align="center">Type</th>
+<th align="center">Description</th>
+<th align="center">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">user_id</td>
+<td align="center">str</td>
+<td align="center">RedNote user ID; required parameter</td>
+<td align="center">None</td>
+</tr>
+<tr>
+<td align="center">limit</td>
+<td align="center">int</td>
+<td align="center">Limit number of notes (1-100); optional parameter</td>
+<td align="center">20</td>
+</tr>
+<tr>
+<td align="center">cookie</td>
+<td align="center">str</td>
+<td align="center">Cookie for requests; optional parameter</td>
+<td align="center">Cookie from config file</td>
+</tr>
+<tr>
+<td align="center">proxy</td>
+<td align="center">str</td>
+<td align="center">Proxy for requests; optional parameter</td>
+<td align="center">Proxy from config file</td>
+</tr>
+</tbody>
+</table>
+<h3>Using with RSS Readers</h3>
+<p>Add the above RSS feed URLs to your favorite RSS reader (such as Feedly, Inoreader, NetNewsWire, etc.) to subscribe to RedNote content updates.</p>
 <h1>📜 Others</h1>
 <ul>
 <li>Due to the date information carried in the links of RedNote notes, using links obtained from previous dates may be subject to risk control. It is recommended to use the latest RedNote notes links when downloading RedNote work files</li>

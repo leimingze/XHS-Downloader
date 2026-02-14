@@ -39,6 +39,7 @@
 <li>✅ 自定义文件名称格式</li> 
 <li>✅ 支持 API 调用功能</li>
 <li>✅ 支持 MCP 调用功能</li>
+<li>✅ 支持 RSS 订阅功能</li>
 <li>✅ 支持文件断点续传下载</li>
 <li>✅ 智能识别作品文件类型</li>
 <li>✅ 支持设置作者备注</li>
@@ -233,6 +234,110 @@ async def example_api():
 <hr>
 <img src="static/screenshot/MCP下载文件2.png" alt="MCP下载文件">
 </details>
+<h2>RSS 模式</h2>
+<p>项目支持将小红书作品生成 RSS 订阅源，方便用户通过 RSS 阅读器订阅和跟踪更新。</p>
+<p><b>启动：</b>运行命令：<code>python .\main.py api</code>（使用 API 模式）</p>
+<p><b>访问：</b>打开浏览器访问 <code>http://127.0.0.1:5556/docs</code> 查看 RSS 接口文档</p>
+<h3>RSS 接口说明</h3>
+<h4>1. 通用 RSS 订阅 <code>/xhs/rss</code></h4>
+<p><b>请求方法：</b><code>GET</code></p>
+<p><b>功能：</b>根据提供的作品链接生成 RSS 订阅源</p>
+<p><b>请求参数：</b></p>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">类型</th>
+<th align="center">含义</th>
+<th align="center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">url</td>
+<td align="center">str</td>
+<td align="center">小红书作品链接，支持多个链接（空格分隔）；必需参数</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">title</td>
+<td align="center">str</td>
+<td align="center">RSS 订阅标题；可选参数</td>
+<td align="center">小红书内容订阅</td>
+</tr>
+<tr>
+<td align="center">description</td>
+<td align="center">str</td>
+<td align="center">RSS 订阅描述；可选参数</td>
+<td align="center">小红书作品 RSS 订阅</td>
+</tr>
+<tr>
+<td align="center">cookie</td>
+<td align="center">str</td>
+<td align="center">请求数据时使用的 Cookie；可选参数</td>
+<td align="center">配置文件 cookie 参数</td>
+</tr>
+<tr>
+<td align="center">proxy</td>
+<td align="center">str</td>
+<td align="center">请求数据时使用的代理；可选参数</td>
+<td align="center">配置文件 proxy 参数</td>
+</tr>
+</tbody>
+</table>
+<p><b>使用示例：</b></p>
+<pre>
+# 单个作品订阅
+http://127.0.0.1:5556/xhs/rss?url=https://www.xiaohongshu.com/explore/作品ID
+
+# 多个作品订阅（空格分隔）
+http://127.0.0.1:5556/xhs/rss?url=https://www.xiaohongshu.com/explore/作品ID1%20https://www.xiaohongshu.com/explore/作品ID2
+
+# 自定义标题和描述
+http://127.0.0.1:5556/xhs/rss?url=作品链接&title=我的订阅&description=我的小红书订阅
+</pre>
+<h4>2. 用户作品 RSS 订阅 <code>/xhs/user/rss</code></h4>
+<p><b>请求方法：</b><code>GET</code></p>
+<p><b>功能：</b>生成特定用户的作品 RSS 订阅源（当前为占位符实现，需配合用户发布作品链接使用）</p>
+<p><b>请求参数：</b></p>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">类型</th>
+<th align="center">含义</th>
+<th align="center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">user_id</td>
+<td align="center">str</td>
+<td align="center">小红书用户 ID；必需参数</td>
+<td align="center">无</td>
+</tr>
+<tr>
+<td align="center">limit</td>
+<td align="center">int</td>
+<td align="center">获取作品数量限制（1-100）；可选参数</td>
+<td align="center">20</td>
+</tr>
+<tr>
+<td align="center">cookie</td>
+<td align="center">str</td>
+<td align="center">请求数据时使用的 Cookie；可选参数</td>
+<td align="center">配置文件 cookie 参数</td>
+</tr>
+<tr>
+<td align="center">proxy</td>
+<td align="center">str</td>
+<td align="center">请求数据时使用的代理；可选参数</td>
+<td align="center">配置文件 proxy 参数</td>
+</tr>
+</tbody>
+</table>
+<h3>在 RSS 阅读器中使用</h3>
+<p>将上述 RSS 订阅链接添加到您常用的 RSS 阅读器中（如 Feedly、Inoreader、NetNewsWire 等），即可订阅小红书内容更新。</p>
 <h1>📜 其他说明</h1>
 <ul>
 <li>由于作品链接携带日期信息，使用先前日期获取的作品链接可能会被风控，建议下载作品文件时使用最新获取的作品链接</li>
